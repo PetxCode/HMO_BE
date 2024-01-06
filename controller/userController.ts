@@ -3,7 +3,7 @@ import crypto from "crypto";
 import userModel from "../model/userModel";
 import jwt from "jsonwebtoken";
 import cloudinary from "../utils/cloudinary";
-import { verifiedEmail } from "../utils/email";
+import { changeTokenEmail, verifiedEmail } from "../utils/email";
 import { streamUpload } from "../utils/streamifier";
 import dotenv from "dotenv";
 dotenv.config();
@@ -246,6 +246,49 @@ export const updateUserAvatar = async (req: any, res: Response) => {
         message: "user avatar has been, added",
         data: updatedUser,
       });
+    } else {
+      return res.status(404).json({
+        message: "Something went wrong",
+      });
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: "Error creating user",
+    });
+  }
+};
+
+// reset Token
+
+export const requestTokenReset = async (req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const { token, email } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if (user) {
+      if (user.token === token) {
+        const newToken = crypto.randomBytes(3).toString("hex");
+        const updatedUser = await userModel.findByIdAndUpdate(
+          userID,
+          {
+            token: newToken,
+          },
+          { new: true }
+        );
+
+        changeTokenEmail(updatedUser);
+
+        return res.status(200).json({
+          message: "Your request has been updated",
+          data: updatedUser,
+        });
+      } else {
+        return res.status(404).json({
+          message: "Please enter correct old token",
+        });
+      }
     } else {
       return res.status(404).json({
         message: "Something went wrong",

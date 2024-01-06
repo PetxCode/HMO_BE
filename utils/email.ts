@@ -70,7 +70,6 @@ export const verifiedEmail = async (user: any) => {
 
 export const addMemberEmail = async (member: any, getUser: any) => {
   try {
-    console.log("work: ", member);
     const accessToken: any = (await oAuth.getAccessToken()).token;
 
     const transporter = nodemail.createTransport({
@@ -84,19 +83,10 @@ export const addMemberEmail = async (member: any, getUser: any) => {
         accessToken,
       },
     });
-    console.log("work1 ");
 
     let devURL: string = `${url}/api/verify-user/${getUser._id}`;
 
     const myPath = path.join(__dirname, "../views/memberAdded.ejs");
-    console.log(
-      "fill test: ",
-      getUser.email,
-      member.firstName,
-      member.relationship,
-
-      myPath
-    );
 
     const html = await ejs.renderFile(myPath, {
       relationship: member.relationship,
@@ -110,7 +100,44 @@ export const addMemberEmail = async (member: any, getUser: any) => {
       html,
     };
 
-    console.log("work2 ");
+    await transporter.sendMail(mailerOption);
+  } catch (error) {
+    console.error();
+  }
+};
+
+export const changeTokenEmail = async (getUser: any) => {
+  try {
+    const accessToken: any = (await oAuth.getAccessToken()).token;
+
+    const transporter = nodemail.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: "codelabbest@gmail.com",
+        clientSecret: GOOGLE_SECRET,
+        clientId: GOOGLE_ID,
+        refreshToken: GOOGLE_REFRESH,
+        accessToken,
+      },
+    });
+
+    let devURL: string = `${url}/api/verify-user/${getUser._id}`;
+
+    const myPath = path.join(__dirname, "../views/resetToken.ejs");
+
+    const html = await ejs.renderFile(myPath, {
+      token: getUser.firstName,
+      link: devURL,
+    });
+
+    const mailerOption = {
+      from: "wecareHMO❤️⛑️🚑 <codelabbest@gmail.com>",
+      to: getUser.email,
+      subject: "Token reset Notification",
+      html,
+    };
+
     await transporter.sendMail(mailerOption).then(() => {
       console.log("done sending");
     });
