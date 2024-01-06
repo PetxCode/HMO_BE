@@ -7,6 +7,16 @@ export const registerValidator = joi.object({
   email: joi.string().email().required(),
 });
 
+export const registerDoctor = joi.object({
+  firstName: joi.string().required(),
+  lastName: joi.string().required(),
+});
+
+export const registerMember = joi.object({
+  firstName: joi.string().required(),
+  relationship: joi.string().required(),
+});
+
 export const passwordValidator = joi.object({
   password: joi.string().pattern(new RegExp(regex)).required(),
   confirm: joi.ref("password"),

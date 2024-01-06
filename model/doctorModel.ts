@@ -1,26 +1,31 @@
 import { Schema, Types, model } from "mongoose";
-import { iUserData } from "../utils/interfaces";
+import { iDoctorData } from "../utils/interfaces";
 
-const userModel = new Schema<iUserData>(
+const doctorModel = new Schema<iDoctorData>(
   {
-    location: {
-      type: String,
-    },
     phoneNumber: {
       type: String,
     },
-    firstName: {
+
+    fullName: {
       type: String,
     },
-    middleName: {
+    hospitalName: {
       type: String,
     },
-    lastName: {
+
+    speciality: {
+      type: String,
+    },
+
+    hospitalID: {
+      type: String,
+    },
+    relationship: {
       type: String,
     },
     email: {
       type: String,
-      unique: true,
     },
     avatar: {
       type: String,
@@ -28,36 +33,29 @@ const userModel = new Schema<iUserData>(
     avatarID: {
       type: String,
     },
-    token: {
-      type: String,
-    },
-    verify: {
-      type: Boolean,
-      default: false,
-    },
     status: {
       type: String,
     },
-    members: [
+    hospital: {
+      type: Types.ObjectId,
+      ref: "hospitals",
+    },
+
+    patientTreated: [
       {
         type: Types.ObjectId,
-        ref: "members",
+        ref: "patientTreateds",
       },
     ],
+
     appointments: [
       {
         type: Types.ObjectId,
         ref: "appointments",
       },
     ],
-    medicalHistory: [
-      {
-        type: Types.ObjectId,
-        ref: "medicalHistories",
-      },
-    ],
   },
   { timestamps: true }
 );
 
-export default model<iUserData>("user", userModel);
+export default model<iDoctorData>("doctors", doctorModel);

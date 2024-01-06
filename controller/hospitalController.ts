@@ -2,28 +2,29 @@ import { Request, Response } from "express";
 import crypto from "crypto";
 import userModel from "../model/userModel";
 import jwt from "jsonwebtoken";
-import { changeTokenEmail, verifiedEmail } from "../utils/email";
+import { changeTokenEmail, hospitalVerifiedEmail } from "../utils/email";
 import { streamUpload } from "../utils/streamifier";
 import dotenv from "dotenv";
+import hospitalModel from "../model/hospitalModel";
 dotenv.config();
 
-export const createUser = async (req: Request, res: Response) => {
+export const createHospital = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
     const token = crypto.randomBytes(3).toString("hex");
     const enrollmentID = crypto.randomBytes(4).toString("hex");
 
-    const user = await userModel.create({
+    const user = await hospitalModel.create({
       email,
       token,
       enrollmentID,
-      status: "main",
+      status: "hospital",
     });
 
-    verifiedEmail(user);
+    hospitalVerifiedEmail(user);
 
     return res.status(200).json({
-      message: "creating user",
+      message: "creating hospital",
       data: user,
     });
   } catch (error) {
@@ -33,17 +34,17 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
-export const signUser = async (req: any, res: Response) => {
+export const signHospital = async (req: any, res: Response) => {
   try {
     const { email, token } = req.body;
 
-    const getUser = await userModel.findOne({ email });
+    const getHospital = await hospitalModel.findOne({ email });
 
-    if (getUser) {
-      if (getUser.token === token) {
-        if (getUser.verify) {
+    if (getHospital) {
+      if (getHospital.token === token) {
+        if (getHospital?.verify) {
           const encrypt = jwt.sign(
-            { id: getUser._id },
+            { id: getHospital._id },
             process.env.JWT_SECRET!,
             {
               expiresIn: "1d",
@@ -51,7 +52,7 @@ export const signUser = async (req: any, res: Response) => {
           );
 
           req.session.isAuth = true;
-          req.session.userID = getUser._id;
+          req.session.hospitalID = getHospital._id;
 
           return res.status(200).json({
             message: "welcome back",
@@ -79,23 +80,23 @@ export const signUser = async (req: any, res: Response) => {
   }
 };
 
-export const verifiedUser = async (req: Request, res: Response) => {
+export const verifiedHospital = async (req: Request, res: Response) => {
   try {
-    const { userID } = req.params;
+    const { hospitalID } = req.params;
 
-    const user = await userModel.findById(userID);
+    const hospital = await hospitalModel.findById(hospitalID);
 
-    if (user) {
-      const updatedUser = await userModel.findByIdAndUpdate(
-        userID,
+    if (hospital) {
+      const updatedhospital = await hospitalModel.findByIdAndUpdate(
+        hospitalID,
         {
           verify: true,
         },
         { new: true }
       );
       return res.status(200).json({
-        message: "verifying user",
-        data: updatedUser,
+        message: "verifying hospital",
+        data: updatedhospital,
       });
     } else {
       return res.status(404).json({
@@ -109,7 +110,7 @@ export const verifiedUser = async (req: Request, res: Response) => {
   }
 };
 
-export const logOutUser = async (req: any, res: Response) => {
+export const logOutHospital = async (req: any, res: Response) => {
   try {
     req.session.destroy();
 
@@ -125,25 +126,23 @@ export const logOutUser = async (req: any, res: Response) => {
 
 // profile update
 
-export const updateUserNames = async (req: Request, res: Response) => {
+export const updateHospitalName = async (req: Request, res: Response) => {
   try {
     const { userID } = req.params;
-    const { firstName, middleName, lastName } = req.body;
+    const { hospitalName } = req.body;
 
-    const user = await userModel.findById(userID);
+    const user = await hospitalModel.findById(userID);
 
     if (user) {
-      const updatedUser = await userModel.findByIdAndUpdate(
+      const updatedUser = await hospitalModel.findByIdAndUpdate(
         userID,
         {
-          firstName,
-          middleName,
-          lastName,
+          hospitalName,
         },
         { new: true }
       );
       return res.status(200).json({
-        message: "user names added",
+        message: "hospital names added",
         data: updatedUser,
       });
     } else {
@@ -158,24 +157,24 @@ export const updateUserNames = async (req: Request, res: Response) => {
   }
 };
 
-export const updateUserLocation = async (req: Request, res: Response) => {
+export const HospitalUpdateLocation = async (req: Request, res: Response) => {
   try {
-    const { userID } = req.params;
+    const { hospitalID } = req.params;
     const { location } = req.body;
 
-    const user = await userModel.findById(userID);
+    const hospital = await hospitalModel.findById(hospitalID);
 
-    if (user) {
-      const updatedUser = await userModel.findByIdAndUpdate(
-        userID,
+    if (hospital) {
+      const updatedHospital = await hospitalModel.findByIdAndUpdate(
+        hospitalID,
         {
           location,
         },
         { new: true }
       );
       return res.status(200).json({
-        message: "user names added",
-        data: updatedUser,
+        message: "hospital location added",
+        data: updatedHospital,
       });
     } else {
       return res.status(404).json({
@@ -189,24 +188,92 @@ export const updateUserLocation = async (req: Request, res: Response) => {
   }
 };
 
-export const updateUserPhoneNumber = async (req: Request, res: Response) => {
+export const HospitalUpdateDescription = async (
+  req: Request,
+  res: Response
+) => {
   try {
-    const { userID } = req.params;
-    const { phoneNumber } = req.body;
+    const { hospitalID } = req.params;
+    const { description } = req.body;
 
-    const user = await userModel.findById(userID);
+    const hospital = await hospitalModel.findById(hospitalID);
 
-    if (user) {
-      const updatedUser = await userModel.findByIdAndUpdate(
-        userID,
+    if (hospital) {
+      const updatedHospital = await hospitalModel.findByIdAndUpdate(
+        hospitalID,
         {
-          phoneNumber,
+          description,
         },
         { new: true }
       );
       return res.status(200).json({
-        message: "user phone number added",
-        data: updatedUser,
+        message: "hospital location added",
+        data: updatedHospital,
+      });
+    } else {
+      return res.status(404).json({
+        message: "Something went wrong",
+      });
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: "Error creating user",
+    });
+  }
+};
+
+export const HospitalUpdateDetail = async (req: Request, res: Response) => {
+  try {
+    const { hospitalID } = req.params;
+    const { detail } = req.body;
+
+    const hospital = await hospitalModel.findById(hospitalID);
+
+    if (hospital) {
+      const updatedHospital = await hospitalModel.findByIdAndUpdate(
+        hospitalID,
+        {
+          detail,
+        },
+        { new: true }
+      );
+      return res.status(200).json({
+        message: "hospital location added",
+        data: updatedHospital,
+      });
+    } else {
+      return res.status(404).json({
+        message: "Something went wrong",
+      });
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: "Error creating user",
+    });
+  }
+};
+
+export const updateHospitalPhoneNumber = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { hospitalID } = req.params;
+    const { phoneContact } = req.body;
+
+    const hospital = await hospitalModel.findById(hospitalID);
+
+    if (hospital) {
+      const updatedHospital = await hospitalModel.findByIdAndUpdate(
+        hospitalID,
+        {
+          phoneContact,
+        },
+        { new: true }
+      );
+      return res.status(200).json({
+        message: "hospital phone number added",
+        data: updatedHospital,
       });
     } else {
       return res.status(404).json({
@@ -222,21 +289,17 @@ export const updateUserPhoneNumber = async (req: Request, res: Response) => {
 
 // profile avatar
 
-export const updateUserAvatar = async (req: any, res: Response) => {
+export const updateHospitalAvatar = async (req: any, res: Response) => {
   try {
-    const { userID } = req.params;
+    const { hospitalID } = req.params;
 
-    const user = await userModel.findById(userID);
+    const hospital = await hospitalModel.findById(hospitalID);
 
-    if (user) {
-      // const { secure_url, public_id } = await cloudinary.uploader.upload(
-      //   req.file.path
-      // );
-
+    if (hospital) {
       const { secure_url, public_id }: any = await streamUpload(req);
 
-      const updatedUser = await userModel.findByIdAndUpdate(
-        userID,
+      const updatedHospital = await hospitalModel.findByIdAndUpdate(
+        hospitalID,
         {
           avatar: secure_url,
           avatarID: public_id,
@@ -244,8 +307,8 @@ export const updateUserAvatar = async (req: any, res: Response) => {
         { new: true }
       );
       return res.status(200).json({
-        message: "user avatar has been, added",
-        data: updatedUser,
+        message: "hospital avatar has been, added",
+        data: updatedHospital,
       });
     } else {
       return res.status(404).json({

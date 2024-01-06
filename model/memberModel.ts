@@ -3,6 +3,14 @@ import { iMemberData } from "../utils/interfaces";
 
 const memberModel = new Schema<iMemberData>(
   {
+    phoneNumber: {
+      type: String,
+    },
+
+    mainEmail: {
+      type: String,
+    },
+
     firstName: {
       type: String,
     },
@@ -36,6 +44,13 @@ const memberModel = new Schema<iMemberData>(
       {
         type: Types.ObjectId,
         ref: "medicalHistories",
+      },
+    ],
+
+    appointments: [
+      {
+        type: Types.ObjectId,
+        ref: "appointments",
       },
     ],
   },

@@ -68,6 +68,53 @@ export const verifiedEmail = async (user: any) => {
   }
 };
 
+export const hospitalVerifiedEmail = async (user: any) => {
+  try {
+    const accessToken: any = (await oAuth.getAccessToken()).token;
+
+    const transporter = nodemail.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: "codelabbest@gmail.com",
+        clientSecret: GOOGLE_SECRET,
+        clientId: GOOGLE_ID,
+        refreshToken: GOOGLE_REFRESH,
+        accessToken,
+      },
+    });
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+      },
+      "weCareHospital"
+    );
+
+    let frontEndURL: string = `${url}/${token}/sign-in`;
+    let devURL: string = `${url}/api/verify-user/${user._id}`;
+
+    const myPath = path.join(__dirname, "../views/index.ejs");
+    const html = await ejs.renderFile(myPath, {
+      link: devURL,
+      tokenCode: user.token,
+      userName: user.userName,
+    });
+
+    const mailerOption = {
+      from: "wecareHMO❤️⛑️🚑 <codelabbest@gmail.com>",
+      to: user.email,
+      subject: "Hospital's Account Verification",
+      html,
+    };
+
+    await transporter.sendMail(mailerOption);
+  } catch (error) {
+    console.error();
+  }
+};
+
 export const addMemberEmail = async (member: any, getUser: any) => {
   try {
     const accessToken: any = (await oAuth.getAccessToken()).token;
