@@ -1,4 +1,12 @@
 import { Document } from "mongoose";
+import { HTTP } from "./enums";
+
+export interface iError {
+  name: string;
+  message: string;
+  status: HTTP;
+  success: boolean;
+}
 
 interface iMedical {
   doctorName: string;

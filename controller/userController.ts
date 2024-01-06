@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import crypto from "crypto";
 import userModel from "../model/userModel";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import cloudinary from "../utils/cloudinary";
+import { verifiedEmail } from "../utils/email";
+import { streamUpload } from "../utils/streamifier";
+import dotenv from "dotenv";
 dotenv.config();
 
 export const createUser = async (req: Request, res: Response) => {
@@ -16,6 +18,8 @@ export const createUser = async (req: Request, res: Response) => {
       token,
       status: "main",
     });
+
+    verifiedEmail(user);
 
     return res.status(200).json({
       message: "creating user",
@@ -224,9 +228,11 @@ export const updateUserAvatar = async (req: any, res: Response) => {
     const user = await userModel.findById(userID);
 
     if (user) {
-      const { secure_url, public_id } = await cloudinary.uploader.upload(
-        req.file.path
-      );
+      // const { secure_url, public_id } = await cloudinary.uploader.upload(
+      //   req.file.path
+      // );
+
+      const { secure_url, public_id }: any = await streamUpload(req);
 
       const updatedUser = await userModel.findByIdAndUpdate(
         userID,
@@ -237,7 +243,7 @@ export const updateUserAvatar = async (req: any, res: Response) => {
         { new: true }
       );
       return res.status(200).json({
-        message: "user phone number added",
+        message: "user avatar has been, added",
         data: updatedUser,
       });
     } else {

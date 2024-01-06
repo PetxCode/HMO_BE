@@ -8,12 +8,14 @@ import {
   updateUserPhoneNumber,
   verifiedUser,
 } from "../controller/userController";
-import { upload } from "../utils/multer";
+// import { upload } from "../utils/multer";
+import multer from "multer";
+const upload = multer().single("avatar");
 
 const router: Router = Router();
 
 router.route("/register-user").post(createUser);
-router.route("/verify-user/:userID").patch(verifiedUser);
+router.route("/verify-user/:userID").get(verifiedUser);
 router.route("/sign-in-user").post(signUser);
 
 router.route("/update-user-name/:userID").patch(updateUserNames);

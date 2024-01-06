@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 
 import session from "express-session";
 import cors from "cors";
@@ -7,10 +7,27 @@ import { mainApp } from "./mainApp";
 import { dbConfig } from "./utils/dbConfig";
 dotenv.config();
 
+import MongoDB from "connect-mongodb-session";
+
+const MongoDBStore = MongoDB(session);
+const store = new MongoDBStore({
+  uri: process.env.MONGO_DB_URL!,
+  collection: "sessions",
+});
+
 const app: Application = express();
 const portServer = process.env.PORT!;
 
 const port = parseInt(portServer);
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+
 app.use(cors());
 app.use(express.json());
 
@@ -25,6 +42,8 @@ app.use(
       sameSite: "lax",
       secure: false,
     },
+
+    store,
   })
 );
 

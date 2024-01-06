@@ -7,7 +7,7 @@ import {
 
 const router: Router = Router();
 
-router.route("/create-member/:userID").post(createMember);
+router.route("/add-member/:userID").post(createMember);
 router.route("/view-member/:userID").get(viewMyMembers);
 router.route("/login-member/:userID").post(loginMembers);
 

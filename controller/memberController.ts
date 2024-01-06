@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import userModel from "../model/userModel";
 import memberModel from "../model/memberModel";
 import { Types } from "mongoose";
+import { relationshipValues } from "../utils/enums";
+import { addMemberEmail } from "../utils/email";
 
 export const createMember = async (req: Request, res: Response) => {
   try {
@@ -11,27 +13,43 @@ export const createMember = async (req: Request, res: Response) => {
     const getUser = await userModel.findById(userID);
 
     if (getUser) {
-      const user = await memberModel.create({
-        firstName,
-        status: "member",
-        relationship,
-      });
+      if (
+        relationship.toLowerCase() === relationshipValues.WIFE ||
+        relationship.toLowerCase() === relationshipValues.CHILD ||
+        relationship.toLowerCase() === relationshipValues.HUSBAND
+      ) {
+        const user = await memberModel.create({
+          firstName,
+          status: "member",
+          relationship: relationship.toLowerCase(),
+        });
 
-      getUser.members.push(new Types.ObjectId(user._id));
-      getUser.save();
+        getUser.members.push(new Types.ObjectId(user._id));
+        getUser.save();
 
-      return res.status(200).json({
-        message: "creating user",
-        data: user,
-      });
+        addMemberEmail(user, getUser).then(() => {
+          console.log("sent");
+        });
+
+        return res.status(200).json({
+          message: "creating user",
+          data: user,
+        });
+      } else {
+        return res.status(404).json({
+          message:
+            "Relationship Error: Relationship must either be Husband, Wife or Child",
+        });
+      }
     } else {
       return res.status(404).json({
-        message: "Error creating user",
+        message: "Error reading user",
       });
     }
-  } catch (error) {
+  } catch (error: any) {
     return res.status(404).json({
-      message: "Error creating user",
+      message: "Error adding member",
+      data: error.message,
     });
   }
 };

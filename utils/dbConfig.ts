@@ -1,10 +1,10 @@
 import { connect } from "mongoose";
-
-const URL: string = "mongodb://127.0.0.1:27017/HMO";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const dbConfig = async () => {
   try {
-    return await connect(URL)
+    return await connect(process.env.MONGO_DB_URL!)
       .then(() => {
         console.log("database connection established");
       })
