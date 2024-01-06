@@ -138,9 +138,7 @@ export const changeTokenEmail = async (getUser: any) => {
       html,
     };
 
-    await transporter.sendMail(mailerOption).then(() => {
-      console.log("done sending");
-    });
+    await transporter.sendMail(mailerOption);
   } catch (error) {
     console.error();
   }

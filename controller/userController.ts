@@ -268,7 +268,7 @@ export const requestTokenReset = async (req: Request, res: Response) => {
     const user = await userModel.findOne({ email });
 
     if (user) {
-      if (user.token === token) {
+      if (user.token === token && user.verify) {
         const newToken = crypto.randomBytes(3).toString("hex");
         const updatedUser = await userModel.findByIdAndUpdate(
           userID,
