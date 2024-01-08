@@ -3,9 +3,9 @@ import { Router } from "express";
 import multer from "multer";
 
 import validator from "../utils/validator";
-import { registerValidator } from "../utils/userValidator";
+import { registerHospital, registerValidator } from "../utils/userValidator";
 import {
-    HospitalUpdateDescription,
+  HospitalUpdateDescription,
   HospitalUpdateDetail,
   HospitalUpdateLocation,
   createHospital,
@@ -14,6 +14,7 @@ import {
   updateHospitalAvatar,
   updateHospitalName,
   updateHospitalPhoneNumber,
+  updateHospitalSpecialization,
   verifiedHospital,
 } from "../controller/hospitalController";
 const upload = multer().single("avatar");
@@ -22,16 +23,19 @@ const router: Router = Router();
 
 router
   .route("/register-hospital")
-  .post(validator(registerValidator), createHospital);
+  .post(validator(registerHospital), createHospital);
 router.route("/verify-hospital/:hospitalID").get(verifiedHospital);
 router.route("/sign-in-hospital").post(signHospital);
 
 router
   .route("/update-hospital-description/:hospitalID")
   .patch(HospitalUpdateDescription);
+
+router.route("/update-hospital-detail/:hospitalID").patch(HospitalUpdateDetail);
+
 router
-  .route("/update-hospital-detail/:hospitalID")
-  .patch(HospitalUpdateDetail);
+  .route("/update-hospital-specialization/:hospitalID")
+  .patch(updateHospitalSpecialization);
 
 router.route("/update-hospital-name/:hospitalID").patch(updateHospitalName);
 router
@@ -41,7 +45,9 @@ router
   .route("/update-hospital-phone/:hospitalID")
   .patch(updateHospitalPhoneNumber);
 
-router.route("/update-avatar/:hospitalID").patch(upload, updateHospitalAvatar);
+router
+  .route("/update-hospital-avatar/:hospitalID")
+  .patch(upload, updateHospitalAvatar);
 
 router.route("/reset-token/").patch(requestTokenReset);
 

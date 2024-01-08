@@ -10,12 +10,13 @@ dotenv.config();
 
 export const createHospital = async (req: Request, res: Response) => {
   try {
-    const { email } = req.body;
+    const { email, hospitalName } = req.body;
     const token = crypto.randomBytes(3).toString("hex");
     const enrollmentID = crypto.randomBytes(4).toString("hex");
 
     const user = await hospitalModel.create({
       email,
+      hospitalName,
       token,
       enrollmentID,
       status: "hospital",
@@ -128,14 +129,14 @@ export const logOutHospital = async (req: any, res: Response) => {
 
 export const updateHospitalName = async (req: Request, res: Response) => {
   try {
-    const { userID } = req.params;
+    const { hospitalID } = req.params;
     const { hospitalName } = req.body;
 
-    const user = await hospitalModel.findById(userID);
+    const user = await hospitalModel.findById(hospitalID);
 
     if (user) {
       const updatedUser = await hospitalModel.findByIdAndUpdate(
-        userID,
+        hospitalID,
         {
           hospitalName,
         },
@@ -239,6 +240,40 @@ export const HospitalUpdateDetail = async (req: Request, res: Response) => {
       );
       return res.status(200).json({
         message: "hospital location added",
+        data: updatedHospital,
+      });
+    } else {
+      return res.status(404).json({
+        message: "Something went wrong",
+      });
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: "Error creating user",
+    });
+  }
+};
+
+export const updateHospitalSpecialization = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { hospitalID } = req.params;
+    const { specialization } = req.body;
+
+    const hospital = await hospitalModel.findById(hospitalID);
+
+    if (hospital) {
+      const updatedHospital = await hospitalModel.findByIdAndUpdate(
+        hospitalID,
+        {
+          specialization,
+        },
+        { new: true }
+      );
+      return res.status(200).json({
+        message: "hospital phone number added",
         data: updatedHospital,
       });
     } else {

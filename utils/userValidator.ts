@@ -7,6 +7,11 @@ export const registerValidator = joi.object({
   email: joi.string().email().required(),
 });
 
+export const registerHospital = joi.object({
+  email: joi.string().email().required(),
+  hospitalName: joi.string().required(),
+});
+
 export const registerDoctor = joi.object({
   firstName: joi.string().required(),
   lastName: joi.string().required(),

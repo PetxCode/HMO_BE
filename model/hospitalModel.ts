@@ -16,9 +16,23 @@ const hospitalModel = new Schema<iHospitalData>(
     location: {
       type: String,
     },
+    token: {
+      type: String,
+    },
 
     hospitalName: {
       type: String,
+      unique: true,
+    },
+
+    email: {
+      type: String,
+      unique: true,
+    },
+
+    verify: {
+      type: Boolean,
+      unique: false,
     },
 
     phoneContact: {
@@ -29,7 +43,19 @@ const hospitalModel = new Schema<iHospitalData>(
       type: String,
     },
 
+    description: {
+      type: String,
+    },
+
     specialization: {
+      type: String,
+    },
+
+    avatar: {
+      type: String,
+    },
+
+    avatarID: {
       type: String,
     },
 

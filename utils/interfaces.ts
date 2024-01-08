@@ -71,6 +71,7 @@ interface iUser {
 
 interface iHospital {
   location: string;
+  email: string;
   token: string;
   hospitalName: string;
   phoneContact: string;
@@ -79,6 +80,8 @@ interface iHospital {
   appointments: Array<{}>;
 
   detail: string;
+  avatar: string;
+  avatarID: string;
   description: string;
   verify: boolean;
   specialization: string;

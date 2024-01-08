@@ -93,13 +93,13 @@ export const hospitalVerifiedEmail = async (user: any) => {
     );
 
     let frontEndURL: string = `${url}/${token}/sign-in`;
-    let devURL: string = `${url}/api/verify-user/${user._id}`;
+    let devURL: string = `${url}/api/verify-hospital/${user._id}`;
 
-    const myPath = path.join(__dirname, "../views/index.ejs");
+    const myPath = path.join(__dirname, "../views/hospitalCreated.ejs");
     const html = await ejs.renderFile(myPath, {
       link: devURL,
-      tokenCode: user.token,
-      userName: user.userName,
+      token: user.token,
+      hospitalName: user.hospitalName,
     });
 
     const mailerOption = {
