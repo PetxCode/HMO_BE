@@ -19,7 +19,7 @@ const oAuth = new google.auth.OAuth2(
 
 oAuth.setCredentials({ refresh_token: GOOGLE_REFRESH });
 
-const url: string = "http://localhost:2233";
+const url: string = "http://localhost:5174";
 
 export const verifiedEmail = async (user: any) => {
   try {

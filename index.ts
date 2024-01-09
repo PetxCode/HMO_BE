@@ -21,14 +21,14 @@ const portServer = process.env.PORT!;
 const port = parseInt(portServer);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "http://localhost:5174");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type");
   next();
 });
 
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5174" }));
 app.use(express.json());
 
 app.use(

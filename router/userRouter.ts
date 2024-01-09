@@ -1,6 +1,8 @@
 import { Router } from "express";
 import {
   createUser,
+  logOutUser,
+  readUserCookie,
   requestTokenReset,
   signUser,
   updateUserAvatar,
@@ -21,6 +23,8 @@ const router: Router = Router();
 router.route("/register-user").post(validator(registerValidator), createUser);
 router.route("/verify-user/:userID").get(verifiedUser);
 router.route("/sign-in-user").post(signUser);
+router.route("/reading-user-cookie").get(readUserCookie);
+router.route("/logout").delete(logOutUser);
 
 router.route("/update-user-name/:userID").patch(updateUserNames);
 router.route("/update-user-location/:userID").patch(updateUserLocation);

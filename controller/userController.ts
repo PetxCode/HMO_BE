@@ -55,7 +55,7 @@ export const signUser = async (req: any, res: Response) => {
 
           return res.status(200).json({
             message: "welcome back",
-            dat: encrypt,
+            data: encrypt,
           });
         } else {
           return res.status(404).json({
@@ -115,6 +115,21 @@ export const logOutUser = async (req: any, res: Response) => {
 
     return res.status(200).json({
       message: "user has been logged out",
+    });
+  } catch (error) {
+    return res.status(404).json({
+      message: "Error creating user",
+    });
+  }
+};
+
+export const readUserCookie = async (req: any, res: Response) => {
+  try {
+    const readUser = req.session.userID;
+
+    return res.status(200).json({
+      message: "user cookie read successfully",
+      data: readUser,
     });
   } catch (error) {
     return res.status(404).json({
