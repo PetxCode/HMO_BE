@@ -19,10 +19,12 @@ const upload = multer().single("avatar");
 const router: Router = Router();
 
 router
-  .route("/add-doctor/:userID")
+  .route("/add-doctor/:hospitalID")
   .post(validator(registerDoctor), createDoctor);
-router.route("/view-doctor/:userID").get(viewMyDoctor);
-router.route("/login-doctor/:userID").post(loginDoctor);
+
+router.route("/view-doctor/:hospitalID").get(viewMyDoctor);
+
+router.route("/login-doctor/:hospitalID").post(loginDoctor);
 
 router.route("/doctor-avatar/:doctorID").patch(upload, updateDoctorAvatar);
 

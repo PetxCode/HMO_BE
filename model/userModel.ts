@@ -38,6 +38,13 @@ const userModel = new Schema<iUserData>(
     status: {
       type: String,
     },
+
+    familyHospital: [
+      {
+        type: String,
+      },
+    ],
+
     members: [
       {
         type: Types.ObjectId,

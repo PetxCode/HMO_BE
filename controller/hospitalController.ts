@@ -31,6 +31,24 @@ export const createHospital = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(404).json({
       message: "Error creating user",
+      data: error,
+    });
+  }
+};
+
+export const HospitalDetail = async (req: Request, res: Response) => {
+  try {
+    const { hospitalID } = req.params;
+
+    const hospital = await hospitalModel.findById(hospitalID);
+
+    return res.status(200).json({
+      message: "hospital detail",
+      data: hospital,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      message: "Error creating user",
     });
   }
 };
@@ -74,6 +92,20 @@ export const signHospital = async (req: any, res: Response) => {
         message: "Error reading user",
       });
     }
+  } catch (error) {
+    return res.status(404).json({
+      message: "Error creating user",
+    });
+  }
+};
+
+export const viewAllHospital = async (req: Request, res: Response) => {
+  try {
+    const hospital = await hospitalModel.find();
+    return res.status(200).json({
+      message: "view all hospital",
+      data: hospital,
+    });
   } catch (error) {
     return res.status(404).json({
       message: "Error creating user",

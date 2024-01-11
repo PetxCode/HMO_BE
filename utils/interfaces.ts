@@ -66,6 +66,7 @@ interface iUser {
   status: string;
   members: Array<{}>;
   medicalHistory: Array<{}>;
+  familyHospital: Array<string>;
   appointments: Array<{}>;
 }
 

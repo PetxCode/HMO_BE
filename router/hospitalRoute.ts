@@ -5,6 +5,7 @@ import multer from "multer";
 import validator from "../utils/validator";
 import { registerHospital, registerValidator } from "../utils/userValidator";
 import {
+  HospitalDetail,
   HospitalUpdateDescription,
   HospitalUpdateDetail,
   HospitalUpdateLocation,
@@ -16,14 +17,20 @@ import {
   updateHospitalPhoneNumber,
   updateHospitalSpecialization,
   verifiedHospital,
+  viewAllHospital,
 } from "../controller/hospitalController";
 const upload = multer().single("avatar");
 
 const router: Router = Router();
 
+router.route("/view-all-hospital").get(viewAllHospital);
+
+router.route("/view-hospital/:hospitalID").get(HospitalDetail);
+
 router
   .route("/register-hospital")
   .post(validator(registerHospital), createHospital);
+
 router.route("/verify-hospital/:hospitalID").get(verifiedHospital);
 router.route("/sign-in-hospital").post(signHospital);
 

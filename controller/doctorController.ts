@@ -20,7 +20,7 @@ export const createDoctor = async (req: Request, res: Response) => {
         hospitalName: getHospital?.hospitalName!,
       });
 
-      getHospital.members.push(new Types.ObjectId(doctor._id));
+      getHospital.doctors.push(new Types.ObjectId(doctor._id));
       getHospital.save();
 
       return res.status(200).json({

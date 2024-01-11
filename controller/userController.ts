@@ -138,6 +138,62 @@ export const readUserCookie = async (req: any, res: Response) => {
   }
 };
 
+export const readUserDetails = async (req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+
+    const user = await userModel.findById(userID);
+    console.log(user);
+
+    if (user) {
+      return res.status(200).json({
+        message: "user read",
+        data: user,
+      });
+    } else {
+      return res.status(404).json({
+        message: "Something went wrong",
+      });
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: "Error creating user",
+    });
+  }
+};
+
+// Choosing Hospital
+export const familyHospiatl = async (req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const { choice1, choice2, choice3 } = req.body;
+
+    const user = await userModel.findById(userID);
+
+    if (user) {
+      const updatedUser = await userModel.findByIdAndUpdate(
+        userID,
+        {
+          familyHospital: [choice1, choice2, choice3],
+        },
+        { new: true }
+      );
+      return res.status(200).json({
+        message: "user hospital added successfully",
+        data: updatedUser,
+      });
+    } else {
+      return res.status(404).json({
+        message: "Something went wrong",
+      });
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: "Error creating user",
+    });
+  }
+};
+
 // profile update
 
 export const updateUserNames = async (req: Request, res: Response) => {
@@ -244,10 +300,6 @@ export const updateUserAvatar = async (req: any, res: Response) => {
     const user = await userModel.findById(userID);
 
     if (user) {
-      // const { secure_url, public_id } = await cloudinary.uploader.upload(
-      //   req.file.path
-      // );
-
       const { secure_url, public_id }: any = await streamUpload(req);
 
       const updatedUser = await userModel.findByIdAndUpdate(

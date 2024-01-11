@@ -13,8 +13,7 @@ export const registerHospital = joi.object({
 });
 
 export const registerDoctor = joi.object({
-  firstName: joi.string().required(),
-  lastName: joi.string().required(),
+  fullName: joi.string().required(),
 });
 
 export const registerMember = joi.object({

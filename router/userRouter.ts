@@ -1,8 +1,10 @@
 import { Router } from "express";
 import {
   createUser,
+  familyHospiatl,
   logOutUser,
   readUserCookie,
+  readUserDetails,
   requestTokenReset,
   signUser,
   updateUserAvatar,
@@ -26,7 +28,12 @@ router.route("/sign-in-user").post(signUser);
 router.route("/reading-user-cookie").get(readUserCookie);
 router.route("/logout").delete(logOutUser);
 
+router.route("/read-user/:userID").get(readUserDetails);
+
+router.route("/choose-hospital/:userID").patch(familyHospiatl);
+
 router.route("/update-user-name/:userID").patch(updateUserNames);
+
 router.route("/update-user-location/:userID").patch(updateUserLocation);
 router.route("/update-user-phone/:userID").patch(updateUserPhoneNumber);
 
