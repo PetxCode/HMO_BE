@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.requestTokenReset = exports.updateHospitalAvatar = exports.updateHospitalPhoneNumber = exports.updateHospitalSpecialization = exports.HospitalUpdateDetail = exports.HospitalUpdateDescription = exports.HospitalUpdateLocation = exports.updateHospitalName = exports.logOutHospital = exports.verifiedHospital = exports.signHospital = exports.createHospital = void 0;
+exports.requestTokenReset = exports.updateHospitalAvatar = exports.updateHospitalPhoneNumber = exports.updateHospitalSpecialization = exports.HospitalUpdateDetail = exports.HospitalUpdateDescription = exports.HospitalUpdateLocation = exports.updateHospitalName = exports.logOutHospital = exports.verifiedHospital = exports.viewAllHospital = exports.signHospital = exports.HospitalDetail = exports.createHospital = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const userModel_1 = __importDefault(require("../model/userModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -42,10 +42,27 @@ const createHospital = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         return res.status(404).json({
             message: "Error creating user",
+            data: error,
         });
     }
 });
 exports.createHospital = createHospital;
+const HospitalDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { hospitalID } = req.params;
+        const hospital = yield hospitalModel_1.default.findById(hospitalID);
+        return res.status(200).json({
+            message: "hospital detail",
+            data: hospital,
+        });
+    }
+    catch (error) {
+        return res.status(404).json({
+            message: "Error creating user",
+        });
+    }
+});
+exports.HospitalDetail = HospitalDetail;
 const signHospital = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, token } = req.body;
@@ -88,6 +105,21 @@ const signHospital = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.signHospital = signHospital;
+const viewAllHospital = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const hospital = yield hospitalModel_1.default.find();
+        return res.status(200).json({
+            message: "view all hospital",
+            data: hospital,
+        });
+    }
+    catch (error) {
+        return res.status(404).json({
+            message: "Error creating user",
+        });
+    }
+});
+exports.viewAllHospital = viewAllHospital;
 const verifiedHospital = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { hospitalID } = req.params;

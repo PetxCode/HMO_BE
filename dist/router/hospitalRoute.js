@@ -10,6 +10,8 @@ const userValidator_1 = require("../utils/userValidator");
 const hospitalController_1 = require("../controller/hospitalController");
 const upload = (0, multer_1.default)().single("avatar");
 const router = (0, express_1.Router)();
+router.route("/view-all-hospital").get(hospitalController_1.viewAllHospital);
+router.route("/view-hospital/:hospitalID").get(hospitalController_1.HospitalDetail);
 router
     .route("/register-hospital")
     .post((0, validator_1.default)(userValidator_1.registerHospital), hospitalController_1.createHospital);

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.requestTokenReset = exports.updateUserAvatar = exports.updateUserPhoneNumber = exports.updateUserLocation = exports.updateUserNames = exports.logOutUser = exports.verifiedUser = exports.signUser = exports.createUser = void 0;
+exports.requestTokenReset = exports.updateUserAvatar = exports.updateUserPhoneNumber = exports.updateUserLocation = exports.updateUserNames = exports.familyHospiatl = exports.readUserDetails = exports.readUserCookie = exports.logOutUser = exports.verifiedUser = exports.signUser = exports.createUser = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const userModel_1 = __importDefault(require("../model/userModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -58,7 +58,7 @@ const signUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     req.session.userID = getUser._id;
                     return res.status(200).json({
                         message: "welcome back",
-                        dat: encrypt,
+                        data: encrypt,
                     });
                 }
                 else {
@@ -126,6 +126,73 @@ const logOutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.logOutUser = logOutUser;
+const readUserCookie = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const readUser = req.session.userID;
+        return res.status(200).json({
+            message: "user cookie read successfully",
+            data: readUser,
+        });
+    }
+    catch (error) {
+        return res.status(404).json({
+            message: "Error creating user",
+        });
+    }
+});
+exports.readUserCookie = readUserCookie;
+const readUserDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userID } = req.params;
+        const user = yield userModel_1.default.findById(userID);
+        console.log(user);
+        if (user) {
+            return res.status(200).json({
+                message: "user read",
+                data: user,
+            });
+        }
+        else {
+            return res.status(404).json({
+                message: "Something went wrong",
+            });
+        }
+    }
+    catch (error) {
+        return res.status(404).json({
+            message: "Error creating user",
+        });
+    }
+});
+exports.readUserDetails = readUserDetails;
+// Choosing Hospital
+const familyHospiatl = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userID } = req.params;
+        const { choice1, choice2, choice3 } = req.body;
+        const user = yield userModel_1.default.findById(userID);
+        if (user) {
+            const updatedUser = yield userModel_1.default.findByIdAndUpdate(userID, {
+                familyHospital: [choice1, choice2, choice3],
+            }, { new: true });
+            return res.status(200).json({
+                message: "user hospital added successfully",
+                data: updatedUser,
+            });
+        }
+        else {
+            return res.status(404).json({
+                message: "Something went wrong",
+            });
+        }
+    }
+    catch (error) {
+        return res.status(404).json({
+            message: "Error creating user",
+        });
+    }
+});
+exports.familyHospiatl = familyHospiatl;
 // profile update
 const updateUserNames = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -216,9 +283,6 @@ const updateUserAvatar = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const { userID } = req.params;
         const user = yield userModel_1.default.findById(userID);
         if (user) {
-            // const { secure_url, public_id } = await cloudinary.uploader.upload(
-            //   req.file.path
-            // );
             const { secure_url, public_id } = yield (0, streamifier_1.streamUpload)(req);
             const updatedUser = yield userModel_1.default.findByIdAndUpdate(userID, {
                 avatar: secure_url,

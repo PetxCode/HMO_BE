@@ -37,6 +37,11 @@ const userModel = new mongoose_1.Schema({
     status: {
         type: String,
     },
+    familyHospital: [
+        {
+            type: String,
+        },
+    ],
     members: [
         {
             type: mongoose_1.Types.ObjectId,

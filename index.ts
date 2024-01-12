@@ -11,7 +11,7 @@ import MongoDB from "connect-mongodb-session";
 
 const MongoDBStore = MongoDB(session);
 const store = new MongoDBStore({
-  uri: process.env.MONGO_DB_URL!,
+  uri: process.env.MONGO_DB_URL_ONLINE!,
   collection: "sessions",
 });
 
@@ -48,7 +48,7 @@ app.use(
 );
 
 mainApp(app);
-const server = app.listen(port, () => {
+const server = app.listen(process.env.PORT || port, () => {
   console.clear();
   console.log();
   dbConfig();

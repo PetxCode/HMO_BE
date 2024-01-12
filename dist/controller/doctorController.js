@@ -30,7 +30,7 @@ const createDoctor = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 relationship: "staff",
                 hospitalName: getHospital === null || getHospital === void 0 ? void 0 : getHospital.hospitalName,
             });
-            getHospital.members.push(new mongoose_1.Types.ObjectId(doctor._id));
+            getHospital.doctors.push(new mongoose_1.Types.ObjectId(doctor._id));
             getHospital.save();
             return res.status(200).json({
                 message: "creating doctor",

@@ -14,8 +14,7 @@ exports.registerHospital = joi_1.default.object({
     hospitalName: joi_1.default.string().required(),
 });
 exports.registerDoctor = joi_1.default.object({
-    firstName: joi_1.default.string().required(),
-    lastName: joi_1.default.string().required(),
+    fullName: joi_1.default.string().required(),
 });
 exports.registerMember = joi_1.default.object({
     firstName: joi_1.default.string().required(),

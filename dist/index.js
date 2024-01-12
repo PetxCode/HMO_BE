@@ -13,20 +13,20 @@ dotenv_1.default.config();
 const connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
 const MongoDBStore = (0, connect_mongodb_session_1.default)(express_session_1.default);
 const store = new MongoDBStore({
-    uri: process.env.MONGO_DB_URL,
+    uri: process.env.MONGO_DB_URL_ONLINE,
     collection: "sessions",
 });
 const app = (0, express_1.default)();
 const portServer = process.env.PORT;
 const port = parseInt(portServer);
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "http://localhost:5174");
     res.header("Access-Control-Allow-Credentials", "true");
     res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
     res.header("Access-Control-Allow-Headers", "Content-Type");
     next();
 });
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({ origin: "http://localhost:5174" }));
 app.use(express_1.default.json());
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET,
@@ -40,7 +40,7 @@ app.use((0, express_session_1.default)({
     store,
 }));
 (0, mainApp_1.mainApp)(app);
-const server = app.listen(port, () => {
+const server = app.listen(process.env.PORT || port, () => {
     console.clear();
     console.log();
     (0, dbConfig_1.dbConfig)();

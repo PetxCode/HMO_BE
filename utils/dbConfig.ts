@@ -4,7 +4,7 @@ dotenv.config();
 
 export const dbConfig = async () => {
   try {
-    return await connect(process.env.MONGO_DB_URL!)
+    return await connect(process.env.MONGO_DB_URL_ONLINE!)
       .then(() => {
         console.log("database connection established");
       })
