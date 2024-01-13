@@ -24,7 +24,9 @@ const router: Router = Router();
 
 router.route("/register-user").post(validator(registerValidator), createUser);
 router.route("/verify-user/:userID").get(verifiedUser);
+
 router.route("/sign-in-user").post(signUser);
+
 router.route("/reading-user-cookie").get(readUserCookie);
 router.route("/logout").delete(logOutUser);
 

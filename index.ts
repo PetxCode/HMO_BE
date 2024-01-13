@@ -23,7 +23,7 @@ const port = parseInt(portServer);
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:5174");
   res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+  res.header("Access-Control-Allow-Methods", "GET, PATCH, PUT, POST, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type");
   next();
 });
@@ -38,7 +38,7 @@ app.use(
     saveUninitialized: false,
 
     cookie: {
-      maxAge: 1000 * 60 * 24 * 60,
+      // maxAge: 1000 * 60 * 24 * 60,
       sameSite: "lax",
       secure: false,
     },

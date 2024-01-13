@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   creatAppointment,
+  creatAppointmentByUser,
   hospitalAppointmentApproved,
   viewHospitalAppointment,
   viewMembersAppointment,
@@ -10,6 +11,7 @@ import {
 const router: Router = Router();
 
 router.route("/create-appointment/:memberID").post(creatAppointment);
+router.route("/create-appointment-user/:userID").post(creatAppointmentByUser);
 
 router.route("/view-member-appointment/:memberID").get(viewMembersAppointment);
 router.route("/view-user-appointment/:userID").get(viewUserAppointment);

@@ -61,6 +61,70 @@ export const creatAppointment = async (req: Request, res: Response) => {
   }
 };
 
+export const creatAppointmentByUser = async (req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const { hospitalName, reason, appointmentDate } = req.body;
+
+    const member: any = await userModel.findById(userID);
+
+    const hospital: any = await hospitalModel.findOne({ hospitalName });
+    const sponsor: any = await userModel.findOne({ email: member.email });
+
+    if (member) {
+      if (sponsor) {
+        if (sponsor.email === member.email) {
+          if (hospital) {
+            const appointmentID = crypto.randomBytes(2).toString("hex");
+
+            const user = await appointmentModel.create({
+              appointmentID,
+              sponsorTies: member.email,
+              sponsorenrollmentID: member.enrollmentID,
+              fullName: member.firstName + " " + member.lastName,
+              enrollmentID: member.enrollmentID,
+              hospitalName,
+              reason,
+              appointmentDate,
+            });
+
+            hospital.appointments.push(new Types.ObjectId(user._id));
+            hospital!.save();
+
+            member.appointments.push(new Types.ObjectId(user._id));
+            member!.save();
+
+            return res.status(201).json({
+              message: "creating appointment",
+              data: user,
+            });
+          } else {
+            return res.status(404).json({
+              message: "Error finding hospital",
+            });
+          }
+        } else {
+          return res.status(404).json({
+            message: "no reach here",
+          });
+        }
+      } else {
+        return res.status(404).json({
+          message: "no sponor found",
+        });
+      }
+    } else {
+      return res.status(404).json({
+        message: "Error finding member",
+      });
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: "Error creating user",
+    });
+  }
+};
+
 export const viewMembersAppointment = async (req: Request, res: Response) => {
   try {
     const { memberID } = req.params;

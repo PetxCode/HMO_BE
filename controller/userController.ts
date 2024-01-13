@@ -75,6 +75,7 @@ export const signUser = async (req: any, res: Response) => {
   } catch (error) {
     return res.status(404).json({
       message: "Error creating user",
+      data: error,
     });
   }
 };
@@ -143,7 +144,6 @@ export const readUserDetails = async (req: Request, res: Response) => {
     const { userID } = req.params;
 
     const user = await userModel.findById(userID);
-    console.log(user);
 
     if (user) {
       return res.status(200).json({

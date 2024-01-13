@@ -64,6 +64,10 @@ interface iUser {
   token: string;
   verify: boolean;
   status: string;
+
+  plan: string;
+  payments: Array<{}>;
+
   members: Array<{}>;
   medicalHistory: Array<{}>;
   familyHospital: Array<string>;
@@ -104,6 +108,19 @@ interface iAppointment {
   user: {};
   member: {};
 }
+
+interface iPayment {
+  startDate: string;
+  endDate: string;
+  paymentReferenceID: string;
+  userID: string;
+  cost: number;
+
+  subscriptionPlan: string;
+  user: {};
+}
+
+export interface iPaymentData extends iPayment, Document {}
 
 export interface iAppointmentData extends iAppointment, Document {}
 export interface iDoctorData extends iDoctor, Document {}

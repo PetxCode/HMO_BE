@@ -4,6 +4,7 @@ const express_1 = require("express");
 const appointmentController_1 = require("../controller/appointmentController");
 const router = (0, express_1.Router)();
 router.route("/create-appointment/:memberID").post(appointmentController_1.creatAppointment);
+router.route("/create-appointment-user/:userID").post(appointmentController_1.creatAppointmentByUser);
 router.route("/view-member-appointment/:memberID").get(appointmentController_1.viewMembersAppointment);
 router.route("/view-user-appointment/:userID").get(appointmentController_1.viewUserAppointment);
 router

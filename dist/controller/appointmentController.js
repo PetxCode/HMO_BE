@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.hospitalAppointmentApproved = exports.viewHospitalAppointment = exports.viewUserAppointment = exports.viewMembersAppointment = exports.creatAppointment = void 0;
+exports.hospitalAppointmentApproved = exports.viewHospitalAppointment = exports.viewUserAppointment = exports.viewMembersAppointment = exports.creatAppointmentByUser = exports.creatAppointment = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const appointmentModel_1 = __importDefault(require("../model/appointmentModel"));
 const memberModel_1 = __importDefault(require("../model/memberModel"));
@@ -69,6 +69,68 @@ const creatAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.creatAppointment = creatAppointment;
+const creatAppointmentByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userID } = req.params;
+        const { hospitalName, reason, appointmentDate } = req.body;
+        const member = yield userModel_1.default.findById(userID);
+        const hospital = yield hospitalModel_1.default.findOne({ hospitalName });
+        const sponsor = yield userModel_1.default.findOne({ email: member.email });
+        if (member) {
+            if (sponsor) {
+                if (sponsor.email === member.email) {
+                    if (hospital) {
+                        const appointmentID = crypto_1.default.randomBytes(2).toString("hex");
+                        const user = yield appointmentModel_1.default.create({
+                            appointmentID,
+                            sponsorTies: member.email,
+                            sponsorenrollmentID: member.enrollmentID,
+                            fullName: member.firstName + " " + member.lastName,
+                            enrollmentID: member.enrollmentID,
+                            hospitalName,
+                            reason,
+                            appointmentDate,
+                        });
+                        hospital.appointments.push(new mongoose_1.Types.ObjectId(user._id));
+                        hospital.save();
+                        member.appointments.push(new mongoose_1.Types.ObjectId(user._id));
+                        member.save();
+                        return res.status(201).json({
+                            message: "creating appointment",
+                            data: user,
+                        });
+                    }
+                    else {
+                        return res.status(404).json({
+                            message: "Error finding hospital",
+                        });
+                    }
+                }
+                else {
+                    return res.status(404).json({
+                        message: "no reach here",
+                    });
+                }
+            }
+            else {
+                return res.status(404).json({
+                    message: "no sponor found",
+                });
+            }
+        }
+        else {
+            return res.status(404).json({
+                message: "Error finding member",
+            });
+        }
+    }
+    catch (error) {
+        return res.status(404).json({
+            message: "Error creating user",
+        });
+    }
+});
+exports.creatAppointmentByUser = creatAppointmentByUser;
 const viewMembersAppointment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { memberID } = req.params;

@@ -4,6 +4,7 @@ import member from "./router/memberRouter";
 import hospital from "./router/hospitalRoute";
 import appontment from "./router/appoinmentRouter";
 import doctor from "./router/doctorRouter";
+import payment from "./router/paymentRouter";
 import { HTTP } from "./utils/enums";
 import { mainError } from "./error/mianError";
 import { handleError } from "./error/handleError";
@@ -17,6 +18,7 @@ export const mainApp = (app: Application) => {
     app.use("/api", doctor);
 
     app.use("/api", appontment);
+    app.use("/api", payment);
 
     app.get("/", (req: Request, res: Response) => {
       try {

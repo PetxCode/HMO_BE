@@ -37,9 +37,19 @@ const userModel = new mongoose_1.Schema({
     status: {
         type: String,
     },
+    plan: {
+        type: String,
+        default: "in-active",
+    },
     familyHospital: [
         {
             type: String,
+        },
+    ],
+    payments: [
+        {
+            type: mongoose_1.Types.ObjectId,
+            ref: "payments",
         },
     ],
     members: [

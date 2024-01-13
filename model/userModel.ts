@@ -39,9 +39,21 @@ const userModel = new Schema<iUserData>(
       type: String,
     },
 
+    plan: {
+      type: String,
+      default: "in-active",
+    },
+
     familyHospital: [
       {
         type: String,
+      },
+    ],
+
+    payments: [
+      {
+        type: Types.ObjectId,
+        ref: "payments",
       },
     ],
 

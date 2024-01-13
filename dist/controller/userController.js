@@ -82,6 +82,7 @@ const signUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         return res.status(404).json({
             message: "Error creating user",
+            data: error,
         });
     }
 });
@@ -145,7 +146,6 @@ const readUserDetails = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         const { userID } = req.params;
         const user = yield userModel_1.default.findById(userID);
-        console.log(user);
         if (user) {
             return res.status(200).json({
                 message: "user read",

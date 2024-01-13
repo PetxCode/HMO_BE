@@ -9,6 +9,7 @@ const memberRouter_1 = __importDefault(require("./router/memberRouter"));
 const hospitalRoute_1 = __importDefault(require("./router/hospitalRoute"));
 const appoinmentRouter_1 = __importDefault(require("./router/appoinmentRouter"));
 const doctorRouter_1 = __importDefault(require("./router/doctorRouter"));
+const paymentRouter_1 = __importDefault(require("./router/paymentRouter"));
 const enums_1 = require("./utils/enums");
 const mianError_1 = require("./error/mianError");
 const handleError_1 = require("./error/handleError");
@@ -19,6 +20,7 @@ const mainApp = (app) => {
         app.use("/api", hospitalRoute_1.default);
         app.use("/api", doctorRouter_1.default);
         app.use("/api", appoinmentRouter_1.default);
+        app.use("/api", paymentRouter_1.default);
         app.get("/", (req, res) => {
             try {
                 return res.status(200).json({
