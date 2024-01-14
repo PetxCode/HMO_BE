@@ -69,6 +69,7 @@ export const creatAppointmentByUser = async (req: Request, res: Response) => {
     const member: any = await userModel.findById(userID);
 
     const hospital: any = await hospitalModel.findOne({ hospitalName });
+
     const sponsor: any = await userModel.findOne({ email: member.email });
 
     if (member) {
@@ -131,6 +132,11 @@ export const viewMembersAppointment = async (req: Request, res: Response) => {
 
     const getMember = await memberModel.findById(memberID).populate({
       path: "appointments",
+      options: {
+        sort: {
+          createdAt: -1,
+        },
+      },
     });
 
     return res.status(200).json({
@@ -151,6 +157,11 @@ export const viewUserAppointment = async (req: Request, res: Response) => {
 
     const getUser = await userModel.findById(userID).populate({
       path: "appointments",
+      options: {
+        sort: {
+          createdAt: -1,
+        },
+      },
     });
 
     return res.status(200).json({
@@ -171,6 +182,11 @@ export const viewHospitalAppointment = async (req: Request, res: Response) => {
 
     const getHospital = await hospitalModel.findById(hospitalID).populate({
       path: "appointments",
+      options: {
+        sort: {
+          createdAt: -1,
+        },
+      },
     });
 
     return res.status(200).json({

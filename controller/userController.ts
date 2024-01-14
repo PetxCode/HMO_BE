@@ -310,6 +310,9 @@ export const updateUserAvatar = async (req: any, res: Response) => {
         },
         { new: true }
       );
+
+      console.log("image uploaded successfully");
+
       return res.status(200).json({
         message: "user avatar has been, added",
         data: updatedUser,

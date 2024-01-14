@@ -136,6 +136,11 @@ const viewMembersAppointment = (req, res) => __awaiter(void 0, void 0, void 0, f
         const { memberID } = req.params;
         const getMember = yield memberModel_1.default.findById(memberID).populate({
             path: "appointments",
+            options: {
+                sort: {
+                    createdAt: -1,
+                },
+            },
         });
         return res.status(200).json({
             message: "reading member",
@@ -155,6 +160,11 @@ const viewUserAppointment = (req, res) => __awaiter(void 0, void 0, void 0, func
         const { userID } = req.params;
         const getUser = yield userModel_1.default.findById(userID).populate({
             path: "appointments",
+            options: {
+                sort: {
+                    createdAt: -1,
+                },
+            },
         });
         return res.status(200).json({
             message: "reading user",
@@ -174,6 +184,11 @@ const viewHospitalAppointment = (req, res) => __awaiter(void 0, void 0, void 0, 
         const { hospitalID } = req.params;
         const getHospital = yield hospitalModel_1.default.findById(hospitalID).populate({
             path: "appointments",
+            options: {
+                sort: {
+                    createdAt: -1,
+                },
+            },
         });
         return res.status(200).json({
             message: "reading hospital",
