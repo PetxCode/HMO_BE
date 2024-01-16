@@ -4,8 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const express_rate_limit_1 = require("express-rate-limit");
 const express_session_1 = __importDefault(require("express-session"));
 const cors_1 = __importDefault(require("cors"));
+const morgan_1 = __importDefault(require("morgan"));
+const helmet_1 = __importDefault(require("helmet"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const mainApp_1 = require("./mainApp");
 const dbConfig_1 = require("./utils/dbConfig");
@@ -15,6 +18,13 @@ const MongoDBStore = (0, connect_mongodb_session_1.default)(express_session_1.de
 const store = new MongoDBStore({
     uri: process.env.MONGO_DB_URL_ONLINE,
     collection: "sessions",
+});
+const limiter = (0, express_rate_limit_1.rateLimit)({
+    windowMs: 5 * 60 * 1000,
+    limit: 5,
+    standardHeaders: "draft-7",
+    legacyHeaders: false,
+    message: "Please come back in 5mins time!!!",
 });
 const app = (0, express_1.default)();
 const portServer = process.env.PORT;
@@ -28,6 +38,9 @@ app.use((req, res, next) => {
 });
 app.use((0, cors_1.default)({ origin: "http://localhost:5174" }));
 app.use(express_1.default.json());
+app.use((0, helmet_1.default)());
+app.use((0, morgan_1.default)("dev"));
+app.use(limiter);
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET,
     resave: false,

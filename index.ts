@@ -1,7 +1,10 @@
 import express, { Application, NextFunction, Request, Response } from "express";
+import { rateLimit } from "express-rate-limit";
 
 import session from "express-session";
 import cors from "cors";
+import morgan from "morgan";
+import helmet from "helmet";
 import dotenv from "dotenv";
 import { mainApp } from "./mainApp";
 import { dbConfig } from "./utils/dbConfig";
@@ -13,6 +16,14 @@ const MongoDBStore = MongoDB(session);
 const store = new MongoDBStore({
   uri: process.env.MONGO_DB_URL_ONLINE!,
   collection: "sessions",
+});
+
+const limiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: "Please come back in 5mins time!!!",
 });
 
 const app: Application = express();
@@ -31,6 +42,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(cors({ origin: "http://localhost:5174" }));
 app.use(express.json());
 
+app.use(helmet());
+app.use(morgan("dev"));
+app.use(limiter);
 app.use(
   session({
     secret: process.env.SESSION_SECRET!,
