@@ -42,6 +42,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(cors({ origin: "http://localhost:5174" }));
 app.use(express.json());
 
+app.use(morgan("tiny"));
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(limiter);
